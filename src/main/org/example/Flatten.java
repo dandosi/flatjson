@@ -2,13 +2,8 @@ package org.example;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -38,7 +33,7 @@ public class Flatten {
      * @param reader
      * @return
      */
-    private static JSONObject parseReader(Reader reader) {
+    protected static JSONObject parseReader(Reader reader) {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
         try {
@@ -53,7 +48,7 @@ public class Flatten {
      * the result is the flattened JSONObject, which was passed as an argument.
      * @param jsonObject
      */
-    private static List<Pair> flattenObject(JSONObject jsonObject) {
+    protected static List<Pair> flattenObject(JSONObject jsonObject) {
         Queue<Pair> queue = new LinkedList<>();
         jsonObject.forEach((k,v) -> {
             if (v instanceof JSONObject) // burrow down
@@ -77,24 +72,4 @@ public class Flatten {
         return resultList;
     }
 
-    /**
-     * Not generating equals or hashcode because they are not yet needed in this small project.
-     */
-    private static class Pair {
-        protected String key;
-        protected Object value;
-
-        protected Pair(String key, Object value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return "Pair{" +
-                    "key='" + key + '\'' +
-                    ", value=" + value +
-                    '}';
-        }
-    }
 }
