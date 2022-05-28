@@ -13,6 +13,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Flatten {
+    /**
+     * main function.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         Reader reader;
         if (args.length > 0) {
@@ -22,14 +27,33 @@ public class Flatten {
             reader = new InputStreamReader(System.in);
         }
 
+        JSONObject jsonObject = parseReader(reader);
+
+        List<Pair> resultList = flattenObject(jsonObject);
+        System.out.println(Arrays.deepToString(resultList.toArray()));
+    }
+
+    /**
+     * Receives a Reader as an input and returns you a JSONObject
+     * @param reader
+     * @return
+     */
+    private static JSONObject parseReader(Reader reader) {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject;
         try {
             jsonObject = (JSONObject) parser.parse(reader);
-        } catch (ParseException e) {
+        } catch (ParseException | IOException e) {
             throw new RuntimeException(e);
         }
+        return jsonObject;
+    }
 
+    /**
+     * the result is the flattened JSONObject, which was passed as an argument.
+     * @param jsonObject
+     */
+    private static List<Pair> flattenObject(JSONObject jsonObject) {
         Queue<Pair> queue = new LinkedList<>();
         jsonObject.forEach((k,v) -> {
             if (v instanceof JSONObject) // burrow down
@@ -50,7 +74,7 @@ public class Flatten {
                 resultList.add(p);
             }
         }
-        System.out.println(Arrays.deepToString(resultList.toArray()));
+        return resultList;
     }
 
     /**
