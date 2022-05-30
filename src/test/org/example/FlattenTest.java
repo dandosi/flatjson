@@ -52,16 +52,6 @@ class FlattenTest {
     }
 
     @Test
-    void testFlattenObjectBig() {
-        Reader reader = new StringReader(JSON_ABC_D_E_S);
-        List<Pair> expectedList = List.of(new Pair("a", 1),
-                new Pair("b", Boolean.TRUE),  new Pair("S", "String-o-Rae"),  new Pair("c.d", 3),  new Pair("c.e", "test"));
-
-        List<Pair> list = Flatten.flattenObject(Flatten.parseReader(reader));
-        assertEquals(Arrays.deepToString(expectedList.toArray()), Arrays.deepToString(list.toArray()));
-    }
-
-    @Test
     void testFlattenToListStart() {
         Reader reader = new StringReader(JSON_A);
         List<Pair> expectedList = List.of(new Pair("a", 1));
@@ -90,17 +80,7 @@ class FlattenTest {
     }
 
     @Test
-    void testFlattenToListBig() {
-        Reader reader = new StringReader(JSON_ABC_D_E_S);
-        List<Pair> expectedList = List.of(new Pair("a", 1),
-                new Pair("b", Boolean.TRUE),  new Pair("S", "String-o-Rae"),  new Pair("c.d", 3),  new Pair("c.e", "test"));
-
-        List<Pair> list = Flatten.flattenObject(Flatten.parseReader(reader));
-        assertEquals(Arrays.deepToString(expectedList.toArray()), Arrays.deepToString(list.toArray()));
-    }
-
-    @Test
-    void testFlattenToListTriple() {
+    void testFlattenObjectThreeLevel() {
         Reader reader = new StringReader(JSON_AC_DF_Z);
         List<Pair> expectedList = List.of(new Pair("a", 1), new Pair("c.d", 3),  new Pair("c.f.z", "6"));
 
@@ -108,6 +88,15 @@ class FlattenTest {
         assertEquals(Arrays.deepToString(expectedList.toArray()), Arrays.deepToString(list.toArray()));
     }
 
+    @Test
+    void testFlattenObjectBig() {
+        Reader reader = new StringReader(JSON_ABC_D_E_S);
+        List<Pair> expectedList = List.of(new Pair("a", 1),
+                new Pair("b", Boolean.TRUE), new Pair("c.d", 3), new Pair("c.e", "test"), new Pair("S", "String-o-Rae"));
+
+        List<Pair> list = Flatten.flattenObject(Flatten.parseReader(reader));
+        assertEquals(Arrays.deepToString(expectedList.toArray()), Arrays.deepToString(list.toArray()));
+    }
 
 
     @Test

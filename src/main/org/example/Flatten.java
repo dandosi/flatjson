@@ -26,6 +26,7 @@ public class Flatten {
 
         List<Pair> resultList = flattenObject(jsonObject);
         System.out.println(Arrays.deepToString(resultList.toArray()));
+        // System.out.println(jsonObject.toJSONString());
     }
 
     /**
@@ -45,30 +46,16 @@ public class Flatten {
     }
 
     /**
-     * the result is the flattened JSONObject, which was passed as an argument.
-     * @param jsonObject
+     * received JSONObject as an argument
+     * the result is the flattened JSONObject.
+     * This is a convenience wrapper.
+     *
+     * @param jsonObject a JSON
      */
-    protected static List<Pair> flattenObject(JSONObject jsonObject) {
-        Queue<Pair> queue = new LinkedList<>();
-        jsonObject.forEach((k,v) -> {
-            if (v instanceof JSONObject) // burrow down
-                System.out.println(k);
-            else { // the rest will be Long or Boolean or String
-                System.out.println(k + " is an object " + v.getClass().getSimpleName() + ", value: " + v);
-            }
-            queue.add(new Pair(k.toString(), v));
-        });
-
-        List<Pair> resultList = new ArrayList<>();
-        while (!queue.isEmpty()) {
-            Pair p = queue.poll();
-            if (p.value instanceof JSONObject jo) {  // newest Java 17 feature, can be replaced with a cast below
-                jo.forEach((k,v) -> queue.add(new Pair(p.key + '.' + k.toString(), v)));
-            } else {
-                resultList.add(p);
-            }
-        }
-        return resultList;
+    public static List<Pair> flattenObject(JSONObject jsonObject) {
+        List<Pair> result = new LinkedList<>();
+        Flatten.flattenToList(jsonObject, "", result);
+        return  result;
     }
 
     protected static void flattenToList(JSONObject jsonObject, String prefix, List<Pair> list) {
@@ -86,7 +73,7 @@ public class Flatten {
      * and a, b into "a.b"
      * @param prefix
      * @param addition
-     * @return
+     * @return a new string consisting of concatenated prefix and addition
      */
     public static String appendPrefix(String prefix, String addition) {
         if (prefix == null || "".equals(prefix))
