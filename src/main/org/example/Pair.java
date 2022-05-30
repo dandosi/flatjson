@@ -1,7 +1,9 @@
 package org.example;
 
+import java.util.Objects;
+
 /**
- * Not generating equals or hashcode because they are not yet needed in this small project.
+ * Needed utility class
  */
 class Pair {
     protected String key;
@@ -18,5 +20,27 @@ class Pair {
                 "key='" + key + '\'' +
                 ", value=" + value +
                 '}';
+    }
+
+    /**
+     * Generated from a template
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair pair = (Pair) o;
+        return key.equals(pair.key) && value.equals(pair.value);
+    }
+
+    /**
+     * Generated from a template
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, value);
     }
 }

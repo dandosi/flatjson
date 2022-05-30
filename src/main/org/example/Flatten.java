@@ -62,8 +62,7 @@ public class Flatten {
         List<Pair> resultList = new ArrayList<>();
         while (!queue.isEmpty()) {
             Pair p = queue.poll();
-            if (p.value instanceof JSONObject) {
-                JSONObject jo =  (JSONObject)p.value;
+            if (p.value instanceof JSONObject jo) {  // newest Java 17 feature, can be replaced with a cast below
                 jo.forEach((k,v) -> queue.add(new Pair(p.key + '.' + k.toString(), v)));
             } else {
                 resultList.add(p);
@@ -72,4 +71,27 @@ public class Flatten {
         return resultList;
     }
 
+    protected static void flattenToList(JSONObject jsonObject, String prefix, List<Pair> list) {
+        jsonObject.forEach((k,v) -> {
+            if (v instanceof JSONObject)
+                flattenToList((JSONObject)v, appendPrefix(prefix, k.toString()), list);
+            else { // if not, it will be Long or Boolean or String
+                list.add(new Pair(appendPrefix(prefix, k.toString()), v)); // inserting final value.
+            }
+        });
+    }
+
+    /**
+     * makes a into "a"
+     * and a, b into "a.b"
+     * @param prefix
+     * @param addition
+     * @return
+     */
+    public static String appendPrefix(String prefix, String addition) {
+        if (prefix == null || "".equals(prefix))
+            return addition;
+        else
+            return prefix + '.' + addition;
+    }
 }
