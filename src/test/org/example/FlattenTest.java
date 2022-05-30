@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -104,5 +106,33 @@ class FlattenTest {
         assertEquals("a", Flatten.appendPrefix("","a"));
         assertEquals("a.b", Flatten.appendPrefix("a","b"));
         assertEquals("a.b.c", Flatten.appendPrefix("a.b","c"));
+    }
+
+    @Test
+    void testParseReader() {
+        Reader sw = new StringReader("{ \"a\": \"true\" }");
+
+        JSONObject jsonObject = Flatten.parseReader(sw);
+        assertEquals(1, jsonObject.size()); // the jsonObject contains all the elements
+
+        Object[] objects = jsonObject.values().toArray(); // when you get the values in the array, they are primitive types
+        Object oneEntry = objects[0]; // getting just one, the index is OK per the above assertion
+
+        assertEquals(String.class, oneEntry.getClass());
+        assertEquals("true", oneEntry);
+    }
+
+    @Test
+    void testMakeSimpleJsonString() {
+        List<Pair> inputList = List.of(new Pair("a", 1),
+                new Pair("b", Boolean.TRUE), new Pair("c.d", 3), new Pair("c.e", "test"), new Pair("S", "String-o-Rae"));
+        String expected_flat_json = "{\n" +
+                "    \"a\": 1,\n" +
+                "    \"b\": true,\n" +
+                "    \"c.d\": 3,\n" +
+                "    \"c.e\": \"test\",\n" +
+                "    \"S\": \"String-o-Rae\"\n" +
+                "}";
+        assertEquals(expected_flat_json, Flatten.makeSimpleJsonString(inputList));
     }
 }
